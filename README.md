@@ -150,12 +150,26 @@ An entry for the gateway as ipgw will need to be added to /lib/ndb/local so that
 
 ## Basic Tunnel:
 
-inside% rexport -s inside.9lab.home / outside.9lab.org &
+This is taken from:  https://9lab.org/plan9/tunnel/
 
-outside% mount /srv/inside.9lab.home /n/inside.9lab.home
+This could be used to create a connection between your home 9Front system and a VPS running 9Front.  This has the upside of being both very simple to do, and is initiated by your local system, rather than something running on the remote system that could be exploited.
 
-outside% bind /n/inside.9lab.home/net /net.alt
-outside% rcpu -h /net.alt/tcp!inside.9lab.home
+From the home system, run the command;
+
+    inside% rexport -s inside.9lab.home / outside.9lab.org &
+
+This will send a /srv post to outside.9lab.org, which will appear there as /srv/inside.9lab.home .  In this case it is sending everything from the root directory on down.  So the entire namespace the rexport was ran in.  
+
+On the remote system, run the command;
+
+    outside% mount /srv/inside.9lab.home /n/inside.9lab.home
+
+Running this on the remote system would mean that everything in / on the local system can now be read from /n/inside.9lab.home/ .  
+
+The local system's /net can then be mounted and access in the remote system, allowing for use of rcpu.
+
+    outside% bind /n/inside.9lab.home/net /net.alt
+    outside% rcpu -h /net.alt/tcp!inside.9lab.home
 
 
 
