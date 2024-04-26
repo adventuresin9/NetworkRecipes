@@ -46,23 +46,23 @@ ipgw=192.168.2.1
 
 
 /cfg/gate/mknat
-	#!/bin/rc
-	rfork
-	# /net set up for inside connection
-	bind '#I1' /net
-	bind -a '#l1' /net
-
-	# /net.alt setup for outside connection
-	bind '#I2' /net.alt
-	bind -a '#l2' /net.alt
-
-
-	x=/net.alt
-	o=/net
-	<$x/ipifc/clone {
-		# Read the new interface number
-		xi=$x/ipifc/`{read}
-
+>	#!/bin/rc
+>	rfork
+>	# /net set up for inside connection
+>	bind '#I1' /net
+>	bind -a '#l1' /net
+>
+>	# /net.alt setup for outside connection
+>	bind '#I2' /net.alt
+>	bind -a '#l2' /net.alt
+>
+>
+>	x=/net.alt
+>	o=/net
+>	<$x/ipifc/clone {
+>		# Read the new interface number
+>		xi=$x/ipifc/`{read}
+>
 		# Write in to the ctl file of the newly created interface to configure it
 		>$xi/ctl {
 			# This is a packet interface
