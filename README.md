@@ -22,6 +22,8 @@ Some of these examples make use of the /cfg directory.  This deirectory is check
 
 	This is a directory that functions like /rc/bin/service/.  The files must be named in a specific way for the system to run listen(8) at the specific port and protocol.  Keep in mind that this service directory will be ran in place of, and _not_ in addition to, the default /rc/bin/service/ scripts.
 
+### Warning
+
 Another thing to be cafeful of, which depends on the font being used to render this text, is the distinction between the kernel devices '#l' and '#I'.  The first is a lower case L, and those are for the Ethernet interface, see; ether(3).  The second is a upper case i, and that is for the IP stack interface, see; ip(3).  Some fonts make it hard to tell the 2 letter apart.  Additional, be aware of the TLS device '#a', which may need to be included in any custom /net directory for TLS connections to function properly; see tls(3).  There are also Connection Server and NDS, which are usually posted to /srv and mounted from there, see; ndb(8).
 
 ## Plan9 style imported interface:
