@@ -20,7 +20,7 @@ This is used to add additional things to the default namespace on this machine. 
 
 + service/
 
-This is a directory that functions like /rc/bin/service/.  The files must be named in a specific way for the system to run listen(8) at the specific port and protocol.  Keep in mind that this service directory will in ran in place of, and _not_ in addition to, the default /rc/bin/service/ scripts.
+This is a directory that functions like /rc/bin/service/.  The files must be named in a specific way for the system to run listen(8) at the specific port and protocol.  Keep in mind that this service directory will be ran in place of, and _not_ in addition to, the default /rc/bin/service/ scripts.
 
 ## Plan9 style imported interface:
 
@@ -29,9 +29,9 @@ This is the classic idea of importing an outside facing networking interface int
 + ether0 = inside network
 + ether1 = outside network
 
-This assumes ether0 is the default network interace configured at boot.  The second Ethernet port (#l1) and a second IP stack (#I1) will be added to /net.alt.  It will then be configured via DHCP by what ever assigns addresses on the outside network.  Next, add Connection Service (ndb/cs) and DNS (ndb/dns), using the -x flag to specify that this is a network stack in /net.alt, rather than the default /net.  Finally, srvfs is used to package all this up and place it in /srv so that it can be mounted into a namespace.
+This assumes ether0 is the default network interace configured at boot.  The second Ethernet port (#l1) and a second IP stack (#I1) will be added to /net.alt.  It will then be configured via DHCP by what ever assigns addresses on the outside network.  Next, add Connection Service (ndb/cs) and DNS (ndb/dns), using the -x flag to specify that this is a network stack in /net.alt, rather than the default /net (see; ndb(8)).  Finally, srvfs is used to package all this up and place it in /srv so that it can be mounted into a namespace.
 
-The following demonstrates this as a script placed in /cfg/gate.  This will be ran from /cfg/gate/cpustart, which is called after all the default confguration is done in /rc/bin/cpurc.  To make it so that this outside network stack always appears in /net.alt on *gate*, the a mount is included in /cfg/gate/namespace which is added to the default namespace found in /lib/namespace.
+The following demonstrates this as a script placed in /cfg/gate, and will be ran from /cfg/gate/cpustart.  To make it so that this outside network stack always appears in /net.alt on *gate*, the a mount is included in /cfg/gate/namespace.
 
 /cfg/gate/mknet1
 
