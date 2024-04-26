@@ -8,19 +8,19 @@ Some of these examples make use of the /cfg directory.  This deirectory is check
 
 + cpurc
 
-This is ran fairly early from /rc/bin/cpurc and is useful to set up things that will be called from later parts of the default configuration.
+	This is ran fairly early from /rc/bin/cpurc and is useful to set up things that will be called from later parts of the default configuration.
 
 + cpustart
 
-This is called at the end of the default cpurc, so this is used to do more configuration after all the defaults have been done.
+	This is called at the end of the default cpurc, so this is used to do more configuration after all the defaults have been done.
 
 + namespace
 
-This is used to add additional things to the default namespace on this machine.  It is called at the end of the default namespace recipe found in /lib/namespace.  
+	This is used to add additional things to the default namespace on this machine.  It is called at the end of the default namespace recipe found in /lib/namespace.  
 
 + service/
 
-This is a directory that functions like /rc/bin/service/.  The files must be named in a specific way for the system to run listen(8) at the specific port and protocol.  Keep in mind that this service directory will be ran in place of, and _not_ in addition to, the default /rc/bin/service/ scripts.
+	This is a directory that functions like /rc/bin/service/.  The files must be named in a specific way for the system to run listen(8) at the specific port and protocol.  Keep in mind that this service directory will be ran in place of, and _not_ in addition to, the default /rc/bin/service/ scripts.
 
 ## Plan9 style imported interface:
 
@@ -127,6 +127,7 @@ In this setup, the configuration is done in a script called *mknat* and will be 
 	srvfs -p 644 nat-out /net.alt
 	srvfs -p 644 nat-in /net
 
+An entry for the gateway as ipgw will need to be added to /lib/ndb/local so that the other systems inside the grid know where the gateway is and to automatically forward outbound traffic there.
 
 /lib/ndb/local
 	...
