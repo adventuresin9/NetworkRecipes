@@ -33,7 +33,7 @@ This assumes ether0 is the default network interace configured at boot.  The sec
 
 The following demonstrates this as a script placed in /cfg/gate, and will be ran from /cfg/gate/cpustart.  To make it so that this outside network stack always appears in /net.alt on *gate*, the a mount is included in /cfg/gate/namespace.
 
-+ /cfg/gate/mknet1
+/cfg/gate/mknet1
 
 	#!/bin/rc
 	rfork
@@ -44,12 +44,12 @@ The following demonstrates this as a script placed in /cfg/gate, and will be ran
 	ndb/dns -x /net.alt
 	srvfs -p 666 outside.net /net.alt
 
-+ /cfg/gate/cpustart
+/cfg/gate/cpustart
 
 	#!/bin/rc
 	/cfg/gate/mknet4
 
-+ /cfg/gate/naemspace
+/cfg/gate/naemspace
 
 	mount -ac /srv/net1 /net.alt
 
@@ -64,7 +64,7 @@ This will setup ether1 (#l1) as the inside port to be used as the gateway.  The 
 
 In this setup, the configuration is done in a script called *mknat* and will be called bby /cfg/gate/cpustart.
 
-+ /cfg/gate/mknat
+/cfg/gate/mknat
 
 	#!/bin/rc
 	rfork
@@ -128,7 +128,7 @@ In this setup, the configuration is done in a script called *mknat* and will be 
 	srvfs -p 644 nat-in /net
 
 
-+ /lib/ndb/local
+/lib/ndb/local
 	...
 	ipgw=192.168.2.1
 	...
