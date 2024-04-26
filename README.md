@@ -33,7 +33,7 @@ This assumes ether0 is the default network interace configured at boot.  The sec
 
 The following demonstrates this as a script placed in /cfg/gate, and will be ran from /cfg/gate/cpustart.  To make it so that this outside network stack always appears in /net.alt on *gate*, the a mount is included in /cfg/gate/namespace.
 
-/cfg/gate/mknet1
++ /cfg/gate/mknet1
 
 	#!/bin/rc
 	rfork
@@ -44,33 +44,27 @@ The following demonstrates this as a script placed in /cfg/gate, and will be ran
 	ndb/dns -x /net.alt
 	srvfs -p 666 outside.net /net.alt
 
-/cfg/gate/cpustart
++ /cfg/gate/cpustart
 
 	#!/bin/rc
 	/cfg/gate/mknet4
 
-/cfg/gate/naemspace
++ /cfg/gate/naemspace
 
 	mount -ac /srv/net1 /net.alt
 
 
 ## Moody's NAT:
 
-outside grid = 192.168.1.0
-inside grid = 192.168.2.0
+This is taken from instructions found here:  https://posixcafe.org/blogs/2024/01/04/0/
 
-sys=gate
-ether0 = cpu access from inside grid
-ether1 = ipgw for inside grid
-ether2 = outside world
+In this case, ether0 (#l0) is assumed to be configured at boot to be the standard cpu server interface, where the machine can be called with rcpu(1).
 
-/lib/ndb/local
-	...
-	ipgw=192.168.2.1
-	...
+This will setup ether1 (#l1) as the inside port to be used as the gateway.  The inside network is using 198.168.2.0, and the gateway port will be set to 192.168.2.1.  The outside interface will be ether2 (#l2), and will use DHCP to be configured by the outside network.  Each interface will use it's own IP stack (#I1 and #I2).
 
+In this setup, the configuration is done in a script called *mknat* and will be called bby /cfg/gate/cpustart.
 
-/cfg/gate/mknat
++ /cfg/gate/mknat
 
 	#!/bin/rc
 	rfork
@@ -133,6 +127,11 @@ ether2 = outside world
 	srvfs -p 644 nat-out /net.alt
 	srvfs -p 644 nat-in /net
 
+
++ /lib/ndb/local
+	...
+	ipgw=192.168.2.1
+	...
 
 
 
