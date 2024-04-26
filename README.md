@@ -46,67 +46,67 @@ ipgw=192.168.2.1
 
 
 /cfg/gate/mknat
-#!/bin/rc
-rfork
-# /net set up for inside connection
-bind '#I1' /net
-bind -a '#l1' /net
+	#!/bin/rc
+	rfork
+	# /net set up for inside connection
+	bind '#I1' /net
+	bind -a '#l1' /net
 
-# /net.alt setup for outside connection
-bind '#I2' /net.alt
-bind -a '#l2' /net.alt
+	# /net.alt setup for outside connection
+	bind '#I2' /net.alt
+	bind -a '#l2' /net.alt
 
 
-x=/net.alt
-o=/net
-<$x/ipifc/clone {
-	# Read the new interface number
-	xi=$x/ipifc/`{read}
+	x=/net.alt
+	o=/net
+	<$x/ipifc/clone {
+		# Read the new interface number
+		xi=$x/ipifc/`{read}
 
-	# Write in to the ctl file of the newly created interface to configure it
-	>$xi/ctl {
-		# This is a packet interface
-		echo bind pkt
+		# Write in to the ctl file of the newly created interface to configure it
+		>$xi/ctl {
+			# This is a packet interface
+			echo bind pkt
 
-		# Our ip is 192.168.69.3/24 and we only allow remote connections from 192.168.69.2
-		echo add 192.168.69.3 255.255.255.255 192.168.69.2
+			# Our ip is 192.168.69.3/24 and we only allow remote connections from 192.168.69.2
+			echo add 192.168.69.3 255.255.255.255 192.168.69.2
 
-		# Route packets to others
-		echo iprouting 1
+			# Route packets to others
+			echo iprouting 1
 
-		# Now create a new interface on the inside IP stack
-		<$o/ipifc/clone {
-			oi=$o/ipifc/`{read}
-			>$oi/ctl {
-				# Hook up this device to the outside IP stack device
-				echo bind netdev $xi/data
+			# Now create a new interface on the inside IP stack
+			<$o/ipifc/clone {
+				oi=$o/ipifc/`{read}
+				>$oi/ctl {
+					# Hook up this device to the outside IP stack device
+					echo bind netdev $xi/data
 
-				# Our ip is 192.168.69.2/24 and we only allow remote connections from 192.168.69.3
-				echo add 192.168.69.2 255.255.255.0 192.168.69.3
-				echo iprouting 1
+					# Our ip is 192.168.69.2/24 and we only allow remote connections from 192.168.69.3
+					echo add 192.168.69.2 255.255.255.0 192.168.69.3
+					echo iprouting 1
+				}
 			}
 		}
 	}
-}
 
-# Configure our route table for both the inside and outside IP stacks
-# Arguments are: target mask nexthop interface(addressed by IP)
-echo add 192.168.2.0 255.255.255.0 192.168.69.2 192.168.69.3 > $x/iproute
-echo add 0.0.0.0 /96 192.168.69.3 192.168.69.2 > $o/iproute
+	# Configure our route table for both the inside and outside IP stacks
+	# Arguments are: target mask nexthop interface(addressed by IP)
+	echo add 192.168.2.0 255.255.255.0 192.168.69.2 192.168.69.3 > $x/iproute
+	echo add 0.0.0.0 /96 192.168.69.3 192.168.69.2 > $o/iproute
 
-# Do DHCP on the external interface. -x tells us which
-# IP stack to use. -t tells us that we are doing NAT
-# and to configure the route table as such. NAT is implemented
-# as just a route table flag.
-ip/ipconfig -x /net.alt -t ether /net.alt/ether2
+	# Do DHCP on the external interface. -x tells us which
+	# IP stack to use. -t tells us that we are doing NAT
+	# and to configure the route table as such. NAT is implemented
+ 	# as just a route table flag.
+	ip/ipconfig -x /net.alt -t ether /net.alt/ether2
 
-# Configure a static IP on our internal interface, which will
-# act as a gateway for our internal network.
-ip/ipconfig ether /net/ether1 192.168.2.1 255.255.255.0
+	# Configure a static IP on our internal interface, which will
+	# act as a gateway for our internal network.
+	ip/ipconfig ether /net/ether1 192.168.2.1 255.255.255.0
 
-# Package up these namespaces 
-srvfs -p 644 nat-out /net.alt
-srvfs -p 644 nat-in /net
+	# Package up these namespaces 
+	srvfs -p 644 nat-out /net.alt
+	srvfs -p 644 nat-in /net
 
 
 
