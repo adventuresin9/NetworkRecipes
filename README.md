@@ -1,14 +1,14 @@
 # NetworkRecipes
 
 
-Plan9 style imported interface:
+## Plan9 style imported interface:
 
-outside grid 192.168.1.0
-inside grid = 192.168.2.0
++ outside grid 192.168.1.0
++ inside grid = 192.168.2.0
 
-sys=gate
-ether0 is inside
-ether1 is outside
++ sys=gate
++ ether0 is inside
++ ether1 is outside
 
 
 /cfg/gate/mknet1
