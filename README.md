@@ -66,7 +66,7 @@ In this case, ether0 (#l0) is assumed to be configured at boot to be the standar
 
 This will setup ether1 (#l1) as the inside port to be used as the gateway.  The inside network is using 198.168.2.0, and the gateway port will be set to 192.168.2.1.  The outside interface will be ether2 (#l2), and will use DHCP to be configured by the outside network.  Each interface will use it's own IP stack (#I1 and #I2).
 
-In this setup, the configuration is done in a script called *mknat* and will be called bby /cfg/gate/cpustart.
+In this setup, the configuration is done in a script called *mknat* and will be called by /cfg/gate/cpustart.
 
 /cfg/gate/mknat
 
@@ -131,9 +131,17 @@ In this setup, the configuration is done in a script called *mknat* and will be 
 	srvfs -p 644 nat-out /net.alt
 	srvfs -p 644 nat-in /net
 
+This script can then be set to run automaticaly at boot.
+
+/cfg/gate/cpustart
+
+	#!/bin/rc
+	/cfg/gate/mknat
+
 An entry for the gateway as ipgw will need to be added to /lib/ndb/local so that the other systems inside the grid know where the gateway is and to automatically forward outbound traffic there.
 
 /lib/ndb/local
+
 	...
 	ipgw=192.168.2.1
 	...
