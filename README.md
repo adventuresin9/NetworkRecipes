@@ -12,21 +12,24 @@
 
 
 /cfg/gate/mknet1
-#!/bin/rc
-rfork
-bind '#l1' /net.alt
-bind -a '#I1' /net.alt
-ip/ipconfig -x /net.alt ether /net.alt/ether4
-ndb/cs -x /net.alt
-ndb/dns -x /net.alt
-srvfs -p 666 net1 /net.alt
+
+	#!/bin/rc
+	rfork
+	bind '#l1' /net.alt
+	bind -a '#I1' /net.alt
+	ip/ipconfig -x /net.alt ether /net.alt/ether4
+	ndb/cs -x /net.alt
+	ndb/dns -x /net.alt
+	srvfs -p 666 net1 /net.alt
 
 /cfg/gate/cpustart
-#!/bin/rc
-/cfg/gate/mknet4
+
+	#!/bin/rc
+	/cfg/gate/mknet4
 
 /cfg/gate/naemspace
-mount -ac /srv/net1 /net.alt
+
+	mount -ac /srv/net1 /net.alt
 
 
 ## Moody's NAT:
@@ -40,9 +43,9 @@ ether1 = ipgw for inside grid
 ether2 = outside world
 
 /lib/ndb/local
-...
-ipgw=192.168.2.1
-...
+	...
+	ipgw=192.168.2.1
+	...
 
 
 /cfg/gate/mknat
@@ -125,25 +128,27 @@ outside% rcpu -h /net.alt/tcp!inside.9lab.home
 ## Fancy Tunnel:
 
 /cfg/gate/mknet3
-#!/bin/rc
-rfork
-bind '#B1' /net
-bind -a '#l3' /net
-echo 'bind ether trunk 0 /net/ether3' >/net/bridge1/ctl
-srvfs -p 666 net4 /net
+
+	#!/bin/rc
+	rfork
+	bind '#B1' /net
+	bind -a '#l3' /net
+	echo 'bind ether trunk 0 /net/ether3' >/net/bridge1/ctl
+	srvfs -p 666 net4 /net
 
 
 /cfg/gate/mknet5
-#!/bin/rc
-rfork
-bind -a '#B1' /net
-bind '#l5:sink ea=cafe42000005' /net.alt
-echo 'bind ether port1 0 /net.alt/ether5' >/net/bridge1/ctl
-bind -a '#I5' /net.alt
-ip/ipconfig -x /net.alt -g 10.0.0.1 ether /net.alt/ether5 10.0.0.99 255.255.255.0
-mount -a /srv/cs /net.alt
-mount -a /srv/dns /net.alt
-srvfs -p 666 net5 /net.alt
+
+	#!/bin/rc
+	rfork
+	bind -a '#B1' /net
+	bind '#l5:sink ea=cafe42000005' /net.alt
+	echo 'bind ether port1 0 /net.alt/ether5' >/net/bridge1/ctl
+	bind -a '#I5' /net.alt
+	ip/ipconfig -x /net.alt -g 10.0.0.1 ether /net.alt/ether5 10.0.0.99 255.255.255.0
+	mount -a /srv/cs /net.alt
+	mount -a /srv/dns /net.alt
+	srvfs -p 666 net5 /net.alt
 
 
 inside% mount /srv/net5 /n/net5
