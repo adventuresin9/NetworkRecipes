@@ -158,7 +158,7 @@ From the home system, run the command;
 
     inside% rexport -s inside.9lab.home / outside.9lab.org &
 
-This will send a /srv post to outside.9lab.org, which will appear there as /srv/inside.9lab.home .  In this case it is sending everything from the root directory on down.  So the entire namespace the rexport was ran in.  
+This will send a /srv post to outside.9lab.org, which will appear there as /srv/inside.9lab.home .  In this case it is sending everything from the root directory on down.  So the entire namespace that rexport was ran in.  
 
 On the remote system, run the command;
 
@@ -166,7 +166,7 @@ On the remote system, run the command;
 
 Running this on the remote system would mean that everything in / on the local system can now be read from /n/inside.9lab.home/ .  
 
-The local system's /net can then be mounted and access in the remote system, allowing for use of rcpu.
+The local system's /net can then be mounted and accessed in the remote system, allowing for use of rcpu.
 
     outside% bind /n/inside.9lab.home/net /net.alt
     outside% rcpu -h /net.alt/tcp!inside.9lab.home
