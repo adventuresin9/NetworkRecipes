@@ -29,7 +29,7 @@ srvfs -p 666 net1 /net.alt
 mount -ac /srv/net1 /net.alt
 
 
-Moody's NAT:
+## Moody's NAT:
 
 outside grid = 192.168.1.0
 inside grid = 192.168.2.0
@@ -46,23 +46,23 @@ ipgw=192.168.2.1
 
 
 /cfg/gate/mknat
->	#!/bin/rc
->	rfork
->	# /net set up for inside connection
->	bind '#I1' /net
->	bind -a '#l1' /net
->
->	# /net.alt setup for outside connection
->	bind '#I2' /net.alt
->	bind -a '#l2' /net.alt
->
->
->	x=/net.alt
->	o=/net
->	<$x/ipifc/clone {
->		# Read the new interface number
->		xi=$x/ipifc/`{read}
->
+
+	#!/bin/rc
+	rfork
+	# /net set up for inside connection
+	bind '#I1' /net
+	bind -a '#l1' /net
+
+	# /net.alt setup for outside connection
+	bind '#I2' /net.alt
+	bind -a '#l2' /net.alt
+
+	x=/net.alt
+	o=/net
+	<$x/ipifc/clone {
+		# Read the new interface number
+		xi=$x/ipifc/`{read}
+
 		# Write in to the ctl file of the newly created interface to configure it
 		>$xi/ctl {
 			# This is a packet interface
@@ -111,7 +111,7 @@ ipgw=192.168.2.1
 
 
 
-Basic Tunnel:
+## Basic Tunnel:
 
 inside% rexport -s inside.9lab.home / outside.9lab.org &
 
@@ -122,7 +122,7 @@ outside% rcpu -h /net.alt/tcp!inside.9lab.home
 
 
 
-Fancy Tunnel:
+## Fancy Tunnel:
 
 /cfg/gate/mknet3
 #!/bin/rc
