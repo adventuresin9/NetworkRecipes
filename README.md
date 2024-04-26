@@ -24,7 +24,7 @@ Some of these examples make use of the /cfg directory.  This deirectory is check
 
 ### Warning
 
-Another thing to be cafeful of, which depends on the font being used to render this text, is the distinction between the kernel devices '#l' and '#I'.  The first is a lower case L, and those are for the Ethernet interface, see; ether(3).  The second is a upper case i, and that is for the IP stack interface, see; ip(3).  Some fonts make it hard to tell the 2 letter apart.  Additional, be aware of the TLS device '#a', which may need to be included in any custom /net directory for TLS connections to function properly; see tls(3).  There are also Connection Server and NDS, which are usually posted to /srv and mounted from there, see; ndb(8).
+Another thing to be cafeful of, which depends on the font being used to render this text, is the distinction between the kernel devices '#l' and '#I'.  The first is a lower case L, and those are for the Ethernet interface, see; ether(3).  The second is a upper case i, and that is for the IP stack interface, see; ip(3).  Some fonts make it hard to tell the two letter apart.  Additionally, be aware of the TLS device '#a', which may need to be included in any custom /net directory for TLS connections to function properly; see tls(3).  There are also Connection Service and DNS, which are usually posted to /srv and mounted from there, see; ndb(8).
 
 ## Plan9 style imported interface:
 
