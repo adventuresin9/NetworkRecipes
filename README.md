@@ -39,7 +39,7 @@ This assumes ether0 is the default network interace configured at boot.  The sec
 
 The following demonstrates this as a script placed in /cfg/gate, and will be ran from /cfg/gate/cpustart.  To make it so that this outside network stack always appears in /net.alt on *gate*, the a mount is included in /cfg/gate/namespace.
 
-/cfg/gate/mknet1
+### /cfg/gate/mknet1
 
 	#!/bin/rc
 	rfork
@@ -50,12 +50,12 @@ The following demonstrates this as a script placed in /cfg/gate, and will be ran
 	ndb/dns -x /net.alt
 	srvfs -p 666 outside.net /net.alt
 
-/cfg/gate/cpustart
+### /cfg/gate/cpustart
 
 	#!/bin/rc
 	/cfg/gate/mknet4
 
-/cfg/gate/naemspace
+### /cfg/gate/naemspace
 
 	mount -ac /srv/net1 /net.alt
 
@@ -70,7 +70,7 @@ This will setup ether1 (#l1) as the inside port to be used as the gateway.  The 
 
 In this setup, the configuration is done in a script called *mknat* and will be called by /cfg/gate/cpustart.
 
-/cfg/gate/mknat
+### /cfg/gate/mknat
 
 	#!/bin/rc
 	rfork
@@ -135,14 +135,14 @@ In this setup, the configuration is done in a script called *mknat* and will be 
 
 This script can then be set to run automaticaly at boot.
 
-/cfg/gate/cpustart
+### /cfg/gate/cpustart
 
 	#!/bin/rc
 	/cfg/gate/mknat
 
 An entry for the gateway as ipgw will need to be added to /lib/ndb/local so that the other systems inside the grid know where the gateway is and to automatically forward outbound traffic there.
 
-/lib/ndb/local
+### /lib/ndb/local
 
 	...
 	ipgw=192.168.2.1
@@ -177,7 +177,11 @@ The local system's /net can then be mounted and accessed in the remote system, a
 
 ## Fancy Tunnel:
 
-/cfg/gate/mknet3
+In this case a virtual Ethernet interface (#l5) will be created and bridged to an unused physical Ethernet interface (#l3).  That virtual interface can then be sent via rexport to a remote system and mounted there.  The remote machine will then be directly accessable through 10.0.0.99 on the local grid.  On this machine, there is 1 on board Ethernet port for ether0, and a 4 port Ethernet PCIe card for ether1-4.  So ether5 would be the first '#l' that wouldn't be associated whith a physical Ethernet device.
+
+First, set up the unused ether3 (#l3) as the trunk end of of a bridge (#B1).
+
+### /cfg/gate/mknet3
 
 	#!/bin/rc
 	rfork
@@ -186,8 +190,9 @@ The local system's /net can then be mounted and accessed in the remote system, a
 	echo 'bind ether trunk 0 /net/ether3' >/net/bridge1/ctl
 	srvfs -p 666 net4 /net
 
+Next, configure ether5 (#l5) as a virtual interface (sink) and give it a MAC address (cafe42000005).  Then hook is at port1 on the same bridge (#B1).  Add an IP stack (#I5), run ip/ipconfig to give it address 10.0.0.99.  CS and DNS can be set up by just using the existing inside grid ones mounted from /srv/cs and /srv/dns.  Finally, post this setup to /srv.
 
-/cfg/gate/mknet5
+### /cfg/gate/mknet5
 
 	#!/bin/rc
 	rfork
@@ -200,12 +205,14 @@ The local system's /net can then be mounted and accessed in the remote system, a
 	mount -a /srv/dns /net.alt
 	srvfs -p 666 net5 /net.alt
 
+On the inside machine, run;
 
-inside% mount /srv/net5 /n/net5
-inside% rexport -s net5 /n/net5 outside.com
-inside% 
+	inside% mount /srv/net5 /n/net5
+	inside% rexport -s net5 /n/net5 outside.com
 
-outside% mount /srv/net5 /n/net5
-outside% bind -b /n/net5 /net
+On the outside machine, run;
+
+	outside% mount /srv/net5 /n/net5
+	outside% bind -b /n/net5 /net
 
 
