@@ -215,7 +215,7 @@ On the outside machine, run;
 	outside% mount /srv/net5 /n/net5
 	outside% bind -b /n/net5 /net
 
-Since this is using a virtual Ethernet interface bridged to a physical interface, more virtual one can be added which will share that physical interface.  Just use another '#ln', '#In'. MAC and IP address.
+Since this is using a virtual Ethernet interface bridged to a physical interface, more virtual one can be added which will share that physical interface.  Just use another '#ln', '#In'. MAC and IP address, and port number on the bridge.
 
 ### /cfg/gate/mknet6
 
