@@ -200,7 +200,7 @@ Next, configure ether5 (#l5) as a virtual interface (sink) and give it a MAC add
 	bind '#l5:sink ea=cafe42000005' /net.alt
 	echo 'bind ether port1 0 /net.alt/ether5' >/net/bridge1/ctl
 	bind -a '#I5' /net.alt
-	ip/ipconfig -x /net.alt -g 10.0.0.1 ether /net.alt/ether5 10.0.0.99 255.255.255.0
+	ip/ipconfig -x /net.alt -g 10.0.0.1 ether /net.alt/ether5 10.0.0.105 255.255.255.0
 	mount -a /srv/cs /net.alt
 	mount -a /srv/dns /net.alt
 	srvfs -p 666 net5 /net.alt
@@ -215,9 +215,25 @@ On the outside machine, run;
 	outside% mount /srv/net5 /n/net5
 	outside% bind -b /n/net5 /net
 
-This will allow the remote machine to ping systems inside the local network from 10.0.0.99.  For the remote system to answer rcpu and other connection, the remote system will need to run a listen on that interface, see; listen(8).
+Since this is using a virtual Ethernet interface bridged to a physical interface, more virtual one can be added which will share that physical interface.  Just use another '#ln', '#In'. MAC and IP address.
 
-For listen to work properly, it must have a namespace which includes this net5 interface.  This can be passed to listen with the -n flag.  What needs to be added is;
+### /cfg/gate/mknet6
+
+	#!/bin/rc
+	rfork
+	bind -a '#B1' /net
+	bind '#l6:sink ea=cafe42000006' /net.alt
+	echo 'bind ether port2 0 /net.alt/ether6' >/net/bridge1/ctl
+	bind -a '#I6' /net.alt
+	ip/ipconfig -x /net.alt -g 10.0.0.1 ether /net.alt/ether5 10.0.0.106 255.255.255.0
+	mount -a /srv/cs /net.alt
+	mount -a /srv/dns /net.alt
+	srvfs -p 666 net6 /net.alt
+
+
+The interface exported as *net5* allow the remote machine to ping and connect to systems inside the local network from 10.0.0.105.  For the remote system to answer rcpu and other connection, the remote system will need to run listen on that interface, see; listen(8).
+
+For listen to work properly, it must have a namespace which includes this net5 interface.  This can be passed as a file to listen with the -n flag.  What needs to be included is;
 
 	mount /srv/net5 /net.alt
 
@@ -225,11 +241,11 @@ Since you may not want this in every namespace by default, you can make another 
 
 	aux/listen -q -d $serviced -n /lib/namespace.for.net5 /net.alt/tcp
 
-This will run the standard services from /rc/bin/service.  To add authentication, add the auth services, and auth/keyfs may be rewuired to get the keys in the namespace;
+This will run the standard services from /rc/bin/service.  To add authentication, add the auth services, and auth/keyfs may be required to get the keys in the namespace;
 
 	auth/keyfs -wp -m /mnt/keys /adm/keys
 	aux/listen -q -t /rc/bin/service.auth -d $serviced -n /lib/namespace.for.net5 /net.alt/tcp
 
- When crossing authdom boundries, entries for those systems may need to be added to /lib/ndb/local, common, or additional ones made, so that an auth server is specified.
+ When crossing authdom boundries, entries for those systems may need to be added to /lib/ndb/local, common, or additional ndb files, so that an auth server is specified.
 
  
