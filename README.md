@@ -207,12 +207,29 @@ Next, configure ether5 (#l5) as a virtual interface (sink) and give it a MAC add
 
 On the inside machine, run;
 
-	inside% mount /srv/net5 /n/net5
-	inside% rexport -s net5 /n/net5 outside.com
+	gate% mount /srv/net5 /n/net5
+	gate% rexport -s net5 /n/net5 outside.com
 
 On the outside machine, run;
 
 	outside% mount /srv/net5 /n/net5
 	outside% bind -b /n/net5 /net
 
+This will allow the remote machine to ping systems inside the local network from 10.0.0.99.  For the remote system to answer rcpu and other connection, the remote system will need to run a listen on that interface, see; listen(8).
 
+For listen to work properly, it must have a namespace which includes this net5 interface.  This can be passed to listen with the -n flag.  What needs to be added is;
+
+	mount /srv/net5 /net.alt
+
+Since you may not want this in every namespace by default, you can make another namespace recipe, like /lib/namespace.for.net5, copy in all the contents of /lib/namespace and add the line for mount /srv/net5.  This can then be added to the listen command.
+
+	aux/listen -q -d $serviced -n /lib/namespace.for.net5 /net.alt/tcp
+
+This will run the standard services from /rc/bin/service.  To add authentication, add the auth services, and auth/keyfs may be rewuired to get the keys in the namespace;
+
+	auth/keyfs -wp -m /mnt/keys /adm/keys
+	aux/listen -q -t /rc/bin/service.auth -d $serviced -n /lib/namespace.for.net5 /net.alt/tcp
+
+ When crossing authdom boundries, entries for those systems may need to be added to /lib/ndb/local, common, or additional ones made, so that an auth server is specified.
+
+ 
